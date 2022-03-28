@@ -67,6 +67,11 @@ const getRates = async (url) => {
   }
 }
 
+const getPercentageDifference = (Value, Previous) => {
+  const PercentageDifference = (Value - Previous) / Value * 100
+  return `${PercentageDifference.toFixed(4)} %`
+}
+
 const ExchangeRates = () => {
   const [rates, setRates] = React.useState()
   const [tooltipText, setTooltipText] = React.useState()
@@ -80,41 +85,48 @@ const ExchangeRates = () => {
   }, [])
 
   return (
-    <ul
-      onMouseOver={(e) => {
-        if (e.target.tagName === 'UL') return null
+    <>
+      <table
+        style={{borderCollapse: 'collapse'}}
+        onMouseOver={(e) => {
+          if (e.target.tagName === 'TABLE') return null
 
-        const currentEl = e.target
+          const currentEl = e.target.closest('[data-tooltip]')
 
-        currentEl.style.backgroundColor = 'rgb(221 217 233)'
-        setTooltipText(currentEl.getAttribute('data-tooltip'))
-        setTooltipCoords([e.pageX, e.pageY])
-        setLastEl(currentEl)
-      }}
-      onMouseMove={(e) => {
-        setTooltipCoords([e.pageX, e.pageY])
-      }}
-      onMouseOut={() => {
-        lastEl.style.backgroundColor = '#fff'
-        setTooltipText(null)
-      }}
-    >
-      {
-        rates && rates[0]?.map(({CharCode, Name}, i) => {
-          return (
-            <li
-              key={i}
-              className="ratesListEl"
-              id={`li-${i}`}
-              data-tooltip={Name}
-            >
-              {CharCode}
-            </li>
-          )
-        })
-      }
+          currentEl.style.backgroundColor = 'rgb(221 217 233)'
+          setTooltipText(currentEl.getAttribute('data-tooltip'))
+          setTooltipCoords([e.pageX, e.pageY])
+          setLastEl(currentEl)
+        }}
+        onMouseMove={(e) => {
+          setTooltipCoords([e.pageX, e.pageY])
+        }}
+        onMouseOut={() => {
+          lastEl.style.backgroundColor = '#fff'
+          setTooltipText(null)
+        }}
+      >
+        <tbody>
+        {
+          rates && rates[0]?.map(({CharCode, Name, Value, Previous}, i) => {
+            return (
+              <tr
+                key={i}
+                className="ratesListEl"
+                id={`li-${i}`}
+                data-tooltip={Name}
+              >
+                <td>{CharCode}</td>
+                <td align="right">{Value.toFixed(4)} ₽</td>
+                <td align="right">{getPercentageDifference(Value, Previous)}</td>
+              </tr>
+            )
+          })
+        }
+        </tbody>
+      </table>
       {tooltipText && <Tooltip text={tooltipText} coords={tooltipCoords}/>}
-    </ul>
+    </>
   )
 }
 

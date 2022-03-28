@@ -7,6 +7,9 @@ const Tooltip = ({text, coords}) => {
         position: 'absolute',
         left: coords[0] - 20,
         top: coords[1] + 20,
+        backgroundColor: '#fff',
+        padding: '8px',
+        zIndex: 10,
       }}
     >
       {text}
