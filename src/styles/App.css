@@ -5,8 +5,37 @@
 body {
     margin: 0;
     padding: 0;
+    color: #29313b;
+    fill: #29313b;
 }
 
 td {
     padding: 2px 24px;
+}
+
+.popOver {
+    background-color: #fff;
+    position: absolute;
+    padding: 8px;
+    border-radius: 4px;
+    box-shadow: rgb(0 0 0 / 20%) 0 5px 5px -3px,
+    rgb(0 0 0 / 14%) 0 8px 10px 1px,
+    rgb(0 0 0 / 12%) 0 3px 14px 2px;
+}
+
+.statistics {
+    width: 160px;
+    padding-left: 16px;
+}
+
+.closeButton {
+    min-width: 20px;
+    padding: 0;
+    position: absolute;
+    top: 4px;
+    right: 4px;
+    cursor: pointer;
+    background-color: #fff;
+    border: none;
+    border-radius: 4px;
 }
