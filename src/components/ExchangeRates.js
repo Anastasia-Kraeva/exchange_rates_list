@@ -2,6 +2,7 @@ import React from 'react';
 import axios from 'axios';
 
 import Tooltip from './Tooltip';
+import Statistics from './Statistics';
 
 const getDateURL = (i, date) => {
   let url = 'https://www.cbr-xml-daily.ru'
@@ -71,12 +72,25 @@ const getPercentageDifference = (Value, Previous) => {
   const PercentageDifference = (Value - Previous) / Value * 100
   return `${PercentageDifference.toFixed(4)} %`
 }
+const getStatisticsContent = (rates, currentRateName) => {
+  const content = []
+  let value = null
+
+  for (let el of rates) {
+    if (el) value = el.find(rate => rate.Name === currentRateName).Value.toFixed(4)
+    content.push(value)
+  }
+
+  return content
+}
 
 const ExchangeRates = () => {
   const [rates, setRates] = React.useState()
   const [tooltipText, setTooltipText] = React.useState()
   const [tooltipCoords, setTooltipCoords] = React.useState()
   const [lastEl, setLastEl] = React.useState()
+  const [statisticsContent, setStatisticsContent] = React.useState()
+  const [statisticsCoords, setStatisticsCoords] = React.useState()
 
   React.useEffect(() => {
     getStatistics(10).then(rates => {
@@ -105,6 +119,11 @@ const ExchangeRates = () => {
           lastEl.style.backgroundColor = '#fff'
           setTooltipText(null)
         }}
+        onClick={(e) => {
+          const Name = e.target.closest('[data-tooltip]').getAttribute('data-tooltip')
+          setStatisticsContent(getStatisticsContent(rates, Name))
+          setStatisticsCoords([e.clientX, e.clientY])
+        }}
       >
         <tbody>
         {
@@ -126,6 +145,11 @@ const ExchangeRates = () => {
         </tbody>
       </table>
       {tooltipText && <Tooltip text={tooltipText} coords={tooltipCoords}/>}
+      {statisticsContent && <Statistics
+        content={statisticsContent}
+        coords={statisticsCoords}
+        setStatisticsContent={setStatisticsContent}
+      />}
     </>
   )
 }
